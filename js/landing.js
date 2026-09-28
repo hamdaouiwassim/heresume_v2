@@ -8,7 +8,7 @@
   }
 
   document.getElementById('templateGrid').innerHTML = TEMPLATES.map((t) => `
-    <a class="template-card" href="${user ? 'dashboard.html' : 'register.html'}">
+    <a class="template-card" href="templates.html">
       <div data-thumb="${t.id}"></div>
       <h3>${t.name}</h3>
       <p class="muted">${t.description}</p>

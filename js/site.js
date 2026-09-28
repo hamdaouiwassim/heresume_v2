@@ -11,7 +11,7 @@
 
   const NAV = [
     { href: home('#how'), label: 'How it works' },
-    { href: home('#templates'), label: 'Templates' },
+    { href: 'templates.html', label: 'Templates', pages: ['templates'] },
     { href: home('#testimonials'), label: 'Testimonials' },
     { href: 'blog.html', label: 'Blog', pages: ['blog', 'post'] },
     { href: 'contact.html', label: 'Contact', pages: ['contact'] },
@@ -25,7 +25,7 @@
   document.body.insertAdjacentHTML('afterbegin', `
     <header class="site-header" id="siteHeader">
       <div class="container site-header-inner">
-        <a href="index.html" class="logo">CV<span>Maker</span></a>
+        <a href="index.html" class="logo"><span class="logo-mark"><img src="images/logos/logo.webp" alt=""></span>H<span>Resume</span></a>
         <nav class="site-nav">
           ${NAV.map((item) => `<a href="${item.href}"${item.pages && item.pages.includes(page) ? ' class="is-active"' : ''}>${item.label}</a>`).join('')}
         </nav>
@@ -41,14 +41,14 @@
         <div class="container">
           <div class="footer-grid">
             <div class="footer-brand">
-              <a href="index.html" class="logo">CV<span>Maker</span></a>
+              <a href="index.html" class="logo"><span class="logo-mark"><img src="images/logos/logo.webp" alt=""></span>H<span>Resume</span></a>
               <p>Create a professional resume in minutes and download it as a PDF.</p>
             </div>
             <div class="footer-col">
               <h3>Product</h3>
               <ul>
                 <li><a href="${home('#how')}">How it works</a></li>
-                <li><a href="${home('#templates')}">Templates</a></li>
+                <li><a href="templates.html">Templates</a></li>
                 <li><a href="${startHref}">Create a resume</a></li>
               </ul>
             </div>
@@ -68,7 +68,7 @@
               </ul>
             </div>
           </div>
-          <div class="footer-bottom">© ${new Date().getFullYear()} CV Maker</div>
+          <div class="footer-bottom">© ${new Date().getFullYear()} HResume</div>
         </div>
       </footer>`);
   });

@@ -5,7 +5,7 @@
  */
 (function () {
   const CONTACT_ENDPOINT = '';
-  const CONTACT_EMAIL = 'hello@cvmaker.app';
+  const CONTACT_EMAIL = 'hello@hresume.app';
 
   const { validate, rules, setFormError } = window.Forms;
   const form = document.getElementById('contactForm');

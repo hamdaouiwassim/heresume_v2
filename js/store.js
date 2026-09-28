@@ -119,6 +119,10 @@
       education: [],
       skills: [],
       languages: [],
+      socials: [],
+      projects: [],
+      certificates: [],
+      hobbies: [],
     };
   }
 
@@ -133,7 +137,7 @@
       return read(KEYS.resumes, []).find((r) => r.id === id && r.userId === userId) || null;
     },
 
-    create(userId, { title, template, color, data }) {
+    create(userId, { title, template, color, data, pageBreaks }) {
       const now = Date.now();
       const resume = {
         id: uid(),
@@ -142,6 +146,7 @@
         template: template || 'classic',
         color: color || '#1f2937',
         data: data || emptyData(),
+        pageBreaks: pageBreaks || [],
         createdAt: now,
         updatedAt: now,
       };
@@ -161,6 +166,16 @@
       return resume;
     },
 
+    /* Next automatic name for this user: hresume_001, hresume_002, … (older resume_### names count too) */
+    nextTitle(userId) {
+      const numbers = this.all(userId)
+        .map((r) => /^h?resume_(\d+)$/i.exec(r.title))
+        .filter(Boolean)
+        .map((match) => Number(match[1]));
+      const next = (numbers.length ? Math.max(...numbers) : 0) + 1;
+      return `hresume_${String(next).padStart(3, '0')}`;
+    },
+
     duplicate(id, userId) {
       const source = this.get(id, userId);
       if (!source) return null;
@@ -169,6 +184,7 @@
         template: source.template,
         color: source.color,
         data: JSON.parse(JSON.stringify(source.data)),
+        pageBreaks: [...(source.pageBreaks || [])],
       });
     },
 

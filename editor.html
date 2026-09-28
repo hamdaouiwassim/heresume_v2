@@ -3,7 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Editor — CV Maker</title>
+  <link rel="icon" href="images/logos/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/logos/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/logos/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="images/logos/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#ffffff">
+  <title>Editor — HResume</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -29,6 +35,7 @@
         <button class="tab" role="tab" data-tab="experience">Experience</button>
         <button class="tab" role="tab" data-tab="education">Education</button>
         <button class="tab" role="tab" data-tab="skills">Skills</button>
+        <button class="tab" role="tab" data-tab="extras">Extras</button>
         <button class="tab" role="tab" data-tab="design">Design</button>
       </nav>
 
@@ -42,7 +49,7 @@
               <div class="photo-preview" id="photoPreview"></div>
               <div>
                 <span class="label">Photo</span>
-                <p class="field-hint">Shown on the Professional template.</p>
+                <p class="field-hint">Shown on templates with a photo (Professional, Creative, Fresh, Signature, Vivid, Spark, Studio).</p>
                 <div class="photo-actions">
                   <label class="btn btn-secondary btn-sm">
                     <span id="photoButtonLabel">Upload photo</span>
@@ -74,7 +81,7 @@
                 <input id="location" data-bind="personal.location" placeholder="City, Country">
               </div>
               <div class="field">
-                <label for="website">Website or LinkedIn</label>
+                <label for="website">Website</label>
                 <input id="website" data-bind="personal.website">
               </div>
             </div>
@@ -82,6 +89,13 @@
               <label for="summary">Professional summary</label>
               <textarea id="summary" data-bind="summary" rows="5" placeholder="Two or three sentences about your experience and what you are looking for."></textarea>
             </div>
+          </div>
+
+          <div class="panel-group">
+            <h3>Social links</h3>
+            <p>LinkedIn, GitHub, portfolio or other profiles.</p>
+            <div class="entries" data-list="socials"></div>
+            <button class="btn btn-secondary btn-block" data-add="socials">Add link</button>
           </div>
         </section>
 
@@ -109,14 +123,39 @@
             <div class="field">
               <span class="label">Skills</span>
               <div class="tag-input" data-tags="skills">
-                <input type="text" placeholder="e.g. Project management" aria-label="Add a skill">
+                <input type="text" placeholder="e.g. Project management, or Figma 4/5" aria-label="Add a skill">
               </div>
             </div>
             <div class="field">
               <span class="label">Languages</span>
               <div class="tag-input" data-tags="languages">
-                <input type="text" placeholder="e.g. French — Fluent" aria-label="Add a language">
+                <input type="text" placeholder="e.g. French — Fluent, or French 8/10" aria-label="Add a language">
               </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Extras -->
+        <section class="panel" data-panel="extras" hidden>
+          <h2>Extras</h2>
+          <p>Optional sections. Anything left empty is not shown on your resume.</p>
+
+          <div class="panel-group">
+            <h3>Projects</h3>
+            <div class="entries" data-list="projects"></div>
+            <button class="btn btn-secondary btn-block" data-add="projects">Add project</button>
+          </div>
+
+          <div class="panel-group">
+            <h3>Certificates</h3>
+            <div class="entries" data-list="certificates"></div>
+            <button class="btn btn-secondary btn-block" data-add="certificates">Add certificate</button>
+          </div>
+
+          <div class="panel-group">
+            <h3>Hobbies</h3>
+            <div class="tag-input" data-tags="hobbies">
+              <input type="text" placeholder="e.g. Photography" aria-label="Add a hobby">
             </div>
           </div>
         </section>
@@ -143,6 +182,14 @@
     </aside>
 
     <section class="editor-preview" id="previewPane">
+      <div class="page-notice" id="pageNotice" hidden>
+        <span id="pageCount"></span>
+        <button type="button" class="btn btn-secondary btn-sm" id="pageBreaksButton" aria-expanded="false" aria-controls="pageBreaksMenu">Page breaks</button>
+        <div class="page-breaks-menu" id="pageBreaksMenu" hidden>
+          <p>Start a section on a new page</p>
+          <div class="page-breaks-list" id="pageBreaksList"></div>
+        </div>
+      </div>
       <div class="preview-frame" id="previewFrame"></div>
     </section>
   </div>

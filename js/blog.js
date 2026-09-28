@@ -1,6 +1,8 @@
 /*
  * Blog articles and rendering for blog.html (list) and post.html (?slug=...).
  * To publish a new article, add an entry to POSTS — newest first.
+ * Thumbnails: set `image` to a photo (e.g. images/blog/my-post.jpg, ideally 1600×900).
+ * Without one, a cover is drawn from `cover` (a resume template and color).
  */
 (function () {
   const POSTS = [
@@ -10,6 +12,8 @@
       category: 'Writing',
       date: '2026-09-22',
       readTime: 5,
+      image: '', // e.g. 'images/blog/resume-summary.jpg'
+      cover: { template: 'classic', color: '#2f54eb' },
       excerpt: 'Recruiters spend seconds on the top of your resume. A focused, specific summary makes those seconds count.',
       body: `
         <p>The summary is the first thing a recruiter reads, and often the only thing they read before deciding whether to keep going. Most summaries waste that moment with vague claims. Here is how to write one that works.</p>
@@ -45,6 +49,8 @@
       category: 'Writing',
       date: '2026-09-10',
       readTime: 4,
+      image: '', // e.g. 'images/blog/results-not-responsibilities.jpg'
+      cover: { template: 'executive', color: '#0f3a5c' },
       excerpt: 'Anyone can list what their job was. Strong resumes show what changed because you were there.',
       body: `
         <p>Most experience sections read like job descriptions: “Responsible for social media,” “Handled customer inquiries.” They tell the reader what you were supposed to do, not how well you did it.</p>
@@ -65,7 +71,7 @@
         </ul>
 
         <h2>Three to five lines per role</h2>
-        <p>Focus on your most relevant achievements. Older or less relevant roles can have one or two lines. In the CV Maker editor, put each achievement on its own line and it will be shown as a bullet point.</p>`,
+        <p>Focus on your most relevant achievements. Older or less relevant roles can have one or two lines. In the HResume editor, put each achievement on its own line and it will be shown as a bullet point.</p>`,
     },
     {
       slug: 'ats-friendly-resume',
@@ -73,6 +79,8 @@
       category: 'Job search',
       date: '2026-08-27',
       readTime: 6,
+      image: '', // e.g. 'images/blog/ats-friendly-resume.jpg'
+      cover: { template: 'minimal', color: '#0f766e' },
       excerpt: 'Many companies use applicant tracking systems to sort applications. A few simple habits help your resume get through.',
       body: `
         <p>An applicant tracking system (ATS) stores and searches applications for recruiters. Many companies use one, so your resume is often read by software before it reaches a person. The good news: what works for an ATS is mostly what works for human readers too.</p>
@@ -91,7 +99,7 @@
         </ul>
 
         <h2>Submit a text-based PDF</h2>
-        <p>PDFs exported from CV Maker contain real, selectable text, which is what tracking systems need. If a posting asks specifically for a Word document, follow that instruction.</p>
+        <p>PDFs exported from HResume contain real, selectable text, which is what tracking systems need. If a posting asks specifically for a Word document, follow that instruction.</p>
 
         <blockquote>Write for the person first. A clear, well-organised resume reads well to software and recruiters alike.</blockquote>`,
     },
@@ -101,6 +109,8 @@
       category: 'Job search',
       date: '2026-08-12',
       readTime: 3,
+      image: '', // e.g. 'images/blog/resume-length.jpg'
+      cover: { template: 'fresh', color: '#6d28d9' },
       excerpt: 'There is no single rule, but there is a simple way to decide what belongs on your resume.',
       body: `
         <p>“Keep it to one page” is common advice, but it is not a law. The right length depends on how much relevant experience you have.</p>
@@ -135,13 +145,34 @@
     return `<p class="post-meta"><span class="post-category">${esc(post.category)}</span> · ${formatDate(post.date)} · ${post.readTime} min read</p>`;
   }
 
+  /* Post thumbnail: the photo when set, otherwise a drawn cover (a tilted resume on a tinted background). */
+  function cover(post, className = '') {
+    if (post.image) {
+      return `<div class="post-cover ${className}"><img src="${esc(post.image)}" alt="" loading="lazy"></div>`;
+    }
+    const { template, color } = post.cover || { template: 'classic', color: '#2f54eb' };
+    return `
+      <div class="post-cover post-cover--art ${className}" style="--cover:${esc(color)}">
+        <div data-cover-thumb data-template="${esc(template)}" data-color="${esc(color)}"></div>
+      </div>`;
+  }
+
+  function mountCovers(root) {
+    root.querySelectorAll('[data-cover-thumb]').forEach((el) => {
+      window.CVRender.mountThumb(el, window.CVRender.SAMPLE, el.dataset.template, el.dataset.color);
+    });
+  }
+
   function card(post, featured = false) {
     return `
       <a class="post-card${featured ? ' post-card--featured' : ''}" href="post.html?slug=${post.slug}">
-        ${meta(post)}
-        <h2>${esc(post.title)}</h2>
-        <p>${esc(post.excerpt)}</p>
-        <span class="read-more">Read article</span>
+        ${cover(post)}
+        <div class="post-card-body">
+          ${meta(post)}
+          <h2>${esc(post.title)}</h2>
+          <p>${esc(post.excerpt)}</p>
+          <span class="read-more">Read article</span>
+        </div>
       </a>`;
   }
 
@@ -149,6 +180,7 @@
   const grid = document.getElementById('postGrid');
   if (grid) {
     grid.innerHTML = POSTS.map((post, i) => card(post, i === 0)).join('');
+    mountCovers(grid);
   }
 
   // Single article
@@ -165,7 +197,7 @@
       return;
     }
 
-    document.title = `${post.title} — CV Maker`;
+    document.title = `${post.title} — HResume`;
     const startHref = window.CVM.Auth.current() ? 'dashboard.html' : 'register.html';
     const more = POSTS.filter((p) => p.slug !== post.slug).slice(0, 2);
 
@@ -174,6 +206,7 @@
       ${meta(post)}
       <h1>${esc(post.title)}</h1>
       <p class="article-lead">${esc(post.excerpt)}</p>
+      ${cover(post, 'post-cover--hero')}
       <div class="prose">${post.body}</div>
       <div class="article-cta">
         <div>
@@ -183,8 +216,11 @@
         <a href="${startHref}" class="btn btn-primary">Create your resume</a>
       </div>`;
 
-    document.getElementById('morePosts').innerHTML = `
+    const morePosts = document.getElementById('morePosts');
+    morePosts.innerHTML = `
       <h2>More articles</h2>
       <div class="post-grid">${more.map((p) => card(p)).join('')}</div>`;
+    mountCovers(article);
+    mountCovers(morePosts);
   }
 })();

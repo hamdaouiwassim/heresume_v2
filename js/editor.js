@@ -3,7 +3,7 @@
  */
 (function () {
   const { Auth, Resumes, utils } = window.CVM;
-  const { render, mountThumb, TEMPLATES, COLORS, PAGE_WIDTH } = window.CVRender;
+  const { render, paginate, mountThumb, colorsFor, TEMPLATES, PAGE_WIDTH, PAGE_HEIGHT } = window.CVRender;
   const esc = utils.escapeHtml;
 
   const user = Auth.requireUser();
@@ -61,9 +61,13 @@
     previewFrame = requestAnimationFrame(renderPreview);
   }
 
+  let pageCount = 1;
+
   function renderPreview() {
     el.frame.innerHTML = render(data, resume.template, resume.color);
+    pageCount = paginate(el.frame.firstElementChild, resume.pageBreaks || []);
     fitPreview();
+    updatePageNotice();
   }
 
   function fitPreview() {
@@ -76,7 +80,68 @@
     page.style.transform = `scale(${scale})`;
     el.frame.style.width = `${PAGE_WIDTH * scale}px`;
     el.frame.style.height = `${page.offsetHeight * scale}px`;
+
+    // Dashed line where each new page starts (not printed)
+    el.frame.querySelectorAll('.page-break').forEach((marker) => marker.remove());
+    for (let n = 2; n <= pageCount; n++) {
+      el.frame.insertAdjacentHTML('beforeend',
+        `<div class="page-break" style="top:${(n - 1) * PAGE_HEIGHT * scale}px"><span>Page ${n}</span></div>`);
+    }
   }
+
+  /* ---------- Page breaks (shown only when the resume is longer than one page) ---------- */
+
+  const pageNotice = document.getElementById('pageNotice');
+  const pageBreaksButton = document.getElementById('pageBreaksButton');
+  const pageBreaksMenu = document.getElementById('pageBreaksMenu');
+  const pageBreaksList = document.getElementById('pageBreaksList');
+
+  function updatePageNotice() {
+    pageNotice.hidden = pageCount <= 1;
+    if (pageCount <= 1) {
+      setMenuOpen(false);
+      return;
+    }
+    document.getElementById('pageCount').textContent = `Your resume is ${pageCount} pages.`;
+
+    const breaks = resume.pageBreaks || [];
+    const sections = Array.from(el.frame.querySelectorAll('.cv-section[data-section]'));
+    pageBreaksList.innerHTML = sections.map((section) => {
+      const key = section.dataset.section;
+      const label = section.querySelector('.cv-h').textContent;
+      return `
+        <label class="checkbox">
+          <input type="checkbox" value="${esc(key)}" ${breaks.includes(key) ? 'checked' : ''}> ${esc(label)}
+        </label>`;
+    }).join('');
+  }
+
+  function setMenuOpen(open) {
+    pageBreaksMenu.hidden = !open;
+    pageBreaksButton.setAttribute('aria-expanded', String(open));
+  }
+
+  pageBreaksButton.addEventListener('click', () => setMenuOpen(pageBreaksMenu.hidden));
+
+  pageBreaksList.addEventListener('change', (event) => {
+    const key = event.target.value;
+    const breaks = new Set(resume.pageBreaks || []);
+    if (event.target.checked) breaks.add(key);
+    else breaks.delete(key);
+    resume.pageBreaks = Array.from(breaks);
+    changed();
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!pageBreaksMenu.hidden && !pageNotice.contains(event.target)) setMenuOpen(false);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !pageBreaksMenu.hidden) {
+      setMenuOpen(false);
+      pageBreaksButton.focus();
+    }
+  });
 
   window.addEventListener('resize', fitPreview);
 
@@ -158,6 +223,39 @@
         { key: 'end', label: 'End date', placeholder: 'e.g. 2022' },
         { key: 'location', label: 'Location', wide: true },
         { key: 'description', label: 'Description', type: 'textarea', wide: true, placeholder: 'Optional: honours, thesis, relevant courses' },
+      ],
+    },
+    projects: {
+      blank: () => ({ name: '', role: '', link: '', start: '', end: '', description: '' }),
+      title: (e) => e.name || 'New project',
+      sub: (e) => e.role || e.link,
+      fields: [
+        { key: 'name', label: 'Project name' },
+        { key: 'role', label: 'Your role', placeholder: 'Optional' },
+        { key: 'start', label: 'Start date', placeholder: 'e.g. 2023' },
+        { key: 'end', label: 'End date', placeholder: 'Present' },
+        { key: 'link', label: 'Link', wide: true, placeholder: 'e.g. github.com/you/project' },
+        { key: 'description', label: 'Description', type: 'textarea', wide: true, placeholder: 'What you built and the result. One point per line.' },
+      ],
+    },
+    certificates: {
+      blank: () => ({ name: '', issuer: '', date: '', link: '' }),
+      title: (e) => e.name || 'New certificate',
+      sub: (e) => [e.issuer, e.date].filter(Boolean).join(' · '),
+      fields: [
+        { key: 'name', label: 'Certificate', wide: true },
+        { key: 'issuer', label: 'Issued by' },
+        { key: 'date', label: 'Date', placeholder: 'e.g. 2024' },
+        { key: 'link', label: 'Credential link', wide: true, placeholder: 'Optional' },
+      ],
+    },
+    socials: {
+      blank: () => ({ label: '', url: '' }),
+      title: (e) => e.label || 'New link',
+      sub: (e) => e.url,
+      fields: [
+        { key: 'label', label: 'Name', placeholder: 'e.g. LinkedIn' },
+        { key: 'url', label: 'URL', placeholder: 'e.g. linkedin.com/in/you' },
       ],
     },
   };
@@ -318,13 +416,16 @@
       mountThumb(thumb, data, thumb.dataset.thumb, resume.color);
     });
 
-    el.swatches.innerHTML = COLORS.map((color) => `
+    const colors = colorsFor(resume.template, resume.color);
+    el.swatches.innerHTML = colors.map((color) => `
       <button type="button" class="swatch" style="background:${color}" data-color="${color}"
         aria-label="Accent color ${color}" aria-pressed="${color === resume.color}"></button>`).join('');
   }
 
   el.picker.addEventListener('change', (event) => {
     resume.template = event.target.value;
+    renderDesign(); // refresh the colors offered for this template
+    el.picker.querySelector(`input[value="${resume.template}"]`).focus();
     changed();
   });
 
@@ -397,7 +498,7 @@
   el.title.value = resume.title;
   el.title.addEventListener('input', () => {
     resume.title = el.title.value.trim() || 'Untitled resume';
-    document.title = `${resume.title} — CV Maker`;
+    document.title = `${resume.title} — HResume`;
     changed();
   });
   el.title.addEventListener('blur', () => { el.title.value = resume.title; });
@@ -416,7 +517,7 @@
   el.togglePreview.addEventListener('click', () => {
     const showing = document.body.classList.toggle('show-preview');
     el.togglePreview.textContent = showing ? 'Edit' : 'Preview';
-    fitPreview();
+    renderPreview();
   });
 
   document.addEventListener('keydown', (event) => {
@@ -428,10 +529,18 @@
 
   /* ---------- Init ---------- */
 
-  document.title = `${resume.title} — CV Maker`;
-  renderList('experience');
-  renderList('education');
+  document.title = `${resume.title} — HResume`;
+  Object.keys(LISTS).forEach(renderList);
   showTab(0);
   renderPreview();
-  if (document.fonts) document.fonts.ready.then(fitPreview);
+  if (document.fonts) document.fonts.ready.then(renderPreview);
+
+  // A freshly created resume has an automatic name: select it so it can be renamed right away
+  const params = new URLSearchParams(location.search);
+  if (params.has('new')) {
+    el.title.focus();
+    el.title.select();
+    params.delete('new');
+    history.replaceState(null, '', `${location.pathname}?${params}`);
+  }
 })();

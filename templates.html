@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="images/logos/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/logos/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/logos/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="images/logos/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#ffffff">
+  <title>Resume templates — HResume</title>
+  <meta name="description" content="Browse professional resume templates. Preview each design in different colors and start your resume in one click.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/resume.css">
+  <script src="js/store.js"></script>
+</head>
+<body data-page="templates">
+  <script src="js/site.js"></script>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <p class="eyebrow">Templates</p>
+        <h1>Resume templates</h1>
+        <p>Pick a design to start with. You can switch templates and colors at any time without losing your content.</p>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <div class="filter-tabs" role="group" aria-label="Filter templates" id="filters">
+          <button type="button" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" data-filter="one" aria-pressed="false">One column</button>
+          <button type="button" data-filter="two" aria-pressed="false">Two columns</button>
+          <button type="button" data-filter="photo" aria-pressed="false">With photo</button>
+        </div>
+
+        <div class="template-list" id="templateList"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/render.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/templates.js"></script>
+</body>
+</html>

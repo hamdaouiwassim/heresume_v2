@@ -14,8 +14,8 @@
       link.classList.toggle('is-active', link.dataset.nav === page);
     });
 
-    document.querySelectorAll('[data-user-initials]').forEach((el) => { el.textContent = utils.initials(user.name); });
-    document.querySelectorAll('[data-user-name]').forEach((el) => { el.textContent = user.name; });
+    showUser(user);
+    initUserMenu();
 
     document.addEventListener('click', (event) => {
       if (event.target.closest('[data-action="logout"]')) {
@@ -25,6 +25,59 @@
     });
 
     return user;
+  }
+
+  /* Fills the user's initials, name and email in the header (also called after a profile change). */
+  function showUser(user) {
+    document.querySelectorAll('[data-user-initials]').forEach((el) => { el.textContent = utils.initials(user.name); });
+    document.querySelectorAll('[data-user-name]').forEach((el) => { el.textContent = user.name; });
+    document.querySelectorAll('[data-user-email]').forEach((el) => { el.textContent = user.email; });
+  }
+
+  /* User dropdown at the top right: Account and Log out. */
+  function initUserMenu() {
+    const button = document.getElementById('userMenuButton');
+    const list = document.getElementById('userMenuList');
+    if (!button || !list) return;
+    const items = () => Array.from(list.querySelectorAll('[role="menuitem"]'));
+
+    function setOpen(open, focusFirst = false) {
+      list.hidden = !open;
+      button.setAttribute('aria-expanded', String(open));
+      if (open && focusFirst) items()[0].focus();
+    }
+
+    button.addEventListener('click', () => setOpen(list.hidden));
+
+    button.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        setOpen(true, true);
+      }
+    });
+
+    list.addEventListener('keydown', (event) => {
+      const all = items();
+      const index = all.indexOf(document.activeElement);
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const step = event.key === 'ArrowDown' ? 1 : -1;
+        all[(index + step + all.length) % all.length].focus();
+      } else if (event.key === 'Tab') {
+        setOpen(false);
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!list.hidden && !event.target.closest('#userMenu')) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !list.hidden) {
+        setOpen(false);
+        button.focus();
+      }
+    });
   }
 
   function createDialog(html, className = '') {
@@ -62,61 +115,96 @@
     });
   }
 
-  /* Dialog for creating a new resume. Redirects to the editor on submit. */
+  /* Creates a resume with an automatic name (hresume_001, …) and opens it in the editor. */
+  function createResume(user, { template, color, sample = false }) {
+    const { SAMPLE, defaultColor } = window.CVRender;
+    let data = window.CVM.emptyData();
+    if (sample) {
+      data = JSON.parse(JSON.stringify(SAMPLE));
+      data.personal.photo = ''; // the sample photo is for previews only
+    } else {
+      data.personal.fullName = user.name;
+      data.personal.email = user.email;
+    }
+    const resume = Resumes.create(user.id, {
+      title: Resumes.nextTitle(user.id),
+      template,
+      color: color || defaultColor(template),
+      data,
+    });
+    location.href = `editor.html?id=${resume.id}&new=1`;
+  }
+
+  /*
+   * A visitor who picks a template on the public Templates page is sent to sign up first;
+   * the choice is kept for this browser tab and used once they reach the dashboard.
+   */
+  const PENDING_KEY = 'cvm_pending_template';
+
+  function rememberTemplate(template, color) {
+    try { sessionStorage.setItem(PENDING_KEY, JSON.stringify({ template, color })); } catch { /* storage unavailable */ }
+  }
+
+  /* Returns true when a remembered template was used (the page is then navigating away). */
+  function usePendingTemplate(user) {
+    let pending = null;
+    try {
+      pending = JSON.parse(sessionStorage.getItem(PENDING_KEY));
+      sessionStorage.removeItem(PENDING_KEY);
+    } catch { /* storage unavailable */ }
+    if (!pending || !window.CVRender.TEMPLATES.some((t) => t.id === pending.template)) return false;
+    createResume(user, { template: pending.template, color: pending.color });
+    return true;
+  }
+
+  /* Large dialog for picking a template. The resume gets an automatic name (hresume_001, …). */
   function openCreateDialog(user) {
     const { TEMPLATES, SAMPLE, mountThumb } = window.CVRender;
     const dialog = createDialog(`
-      <form method="dialog" id="createForm">
-        <div class="dialog-body">
-          <h2>New resume</h2>
-          <p>Give it a name and choose a starting template. You can change both later.</p>
-          <div class="form">
-            <div class="field">
-              <label for="newTitle">Resume name</label>
-              <input id="newTitle" name="title" placeholder="e.g. Product Designer — 2026" autocomplete="off">
-            </div>
-            <div class="field">
-              <span class="label">Template</span>
-              <div class="template-picker">
-                ${TEMPLATES.map((t, i) => `
-                  <label class="template-option">
-                    <input type="radio" name="template" value="${t.id}" ${i === 0 ? 'checked' : ''}>
-                    <div class="thumb" data-thumb="${t.id}"></div>
-                    <span>${t.name}</span>
-                  </label>`).join('')}
-              </div>
-            </div>
-            <label class="checkbox">
-              <input type="checkbox" name="sample"> Start with example content
-            </label>
+      <form method="dialog" class="dialog-form" id="createForm">
+        <div class="dialog-head">
+          <h2>Choose a template</h2>
+          <p>You can switch templates and colors at any time in the editor.</p>
+        </div>
+        <div class="dialog-scroll">
+          <div class="template-gallery">
+            ${TEMPLATES.map((t, i) => `
+              <label class="template-choice">
+                <input type="radio" name="template" value="${t.id}" ${i === 0 ? 'checked' : ''}>
+                <div class="thumb" data-thumb="${t.id}"></div>
+                <strong>${t.name}</strong>
+                <span>${t.description}</span>
+              </label>`).join('')}
           </div>
         </div>
         <div class="dialog-actions">
+          <label class="checkbox dialog-actions-start">
+            <input type="checkbox" name="sample"> Start with example content
+          </label>
           <button type="button" class="btn btn-secondary" data-close>Cancel</button>
           <button type="submit" class="btn btn-primary">Create resume</button>
         </div>
-      </form>`);
+      </form>`, 'dialog-xl');
 
     dialog.querySelectorAll('[data-thumb]').forEach((el) => mountThumb(el, SAMPLE, el.dataset.thumb));
     dialog.querySelector('[data-close]').addEventListener('click', () => dialog.close());
-    dialog.querySelector('#newTitle').focus();
+    dialog.querySelector('input[name="template"]:checked').focus();
 
-    dialog.querySelector('#createForm').addEventListener('submit', (event) => {
+    const form = dialog.querySelector('#createForm');
+
+    function create() {
+      const values = new FormData(form);
+      createResume(user, { template: values.get('template'), sample: Boolean(values.get('sample')) });
+    }
+
+    form.addEventListener('submit', (event) => {
       event.preventDefault();
-      const form = new FormData(event.target);
-      let data = window.CVM.emptyData();
-      if (form.get('sample')) {
-        data = JSON.parse(JSON.stringify(SAMPLE));
-      } else {
-        data.personal.fullName = user.name;
-        data.personal.email = user.email;
-      }
-      const resume = Resumes.create(user.id, {
-        title: form.get('title') || 'Untitled resume',
-        template: form.get('template'),
-        data,
-      });
-      location.href = `editor.html?id=${resume.id}`;
+      create();
+    });
+
+    // Double-clicking a template creates the resume right away
+    form.addEventListener('dblclick', (event) => {
+      if (event.target.closest('.template-choice')) create();
     });
   }
 
@@ -177,5 +265,15 @@
     });
   }
 
-  window.App = { initShell, confirmAction, openCreateDialog, renderResumeCards };
+  window.App = {
+    initShell,
+    showUser,
+    createDialog,
+    confirmAction,
+    createResume,
+    rememberTemplate,
+    usePendingTemplate,
+    openCreateDialog,
+    renderResumeCards,
+  };
 })();

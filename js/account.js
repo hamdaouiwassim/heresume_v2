@@ -26,7 +26,7 @@
     if (!validate([[name, rules.name], [email, rules.email]])) return;
     try {
       user = Auth.updateProfile(user.id, { name: name.value, email: email.value });
-      document.querySelectorAll('[data-user-initials]').forEach((el) => { el.textContent = utils.initials(user.name); });
+      window.App.showUser(user);
       showNote(profileForm, 'Saved');
     } catch (error) {
       showNote(profileForm, error.message, true);

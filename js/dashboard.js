@@ -2,6 +2,9 @@
   const user = window.App.initShell();
   if (!user) return;
 
+  // Came from "Use this template" on the Templates page before signing in
+  if (window.App.usePendingTemplate(user)) return;
+
   const { Resumes, completeness, utils } = window.CVM;
   const RECENT_LIMIT = 3;
 
