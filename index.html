@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CV Maker — Build a professional resume in minutes</title>
+  <meta name="description" content="Create a professional resume in minutes. Fill in your details, choose a template and download a PDF.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/resume.css">
+  <script src="js/store.js"></script>
+</head>
+<body data-page="home">
+  <script src="js/site.js"></script>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner">
+        <div>
+          <p class="eyebrow">Free resume builder</p>
+          <h1>Build a resume that gets you noticed.</h1>
+          <p class="lead">Fill in your details, pick a template and download a polished PDF. No design skills needed.</p>
+          <div class="hero-cta">
+            <a href="register.html" class="btn btn-primary btn-lg" data-cta>Create your resume</a>
+            <a href="#templates" class="btn btn-secondary btn-lg">View templates</a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div data-thumb="modern" data-color="#2f54eb"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" class="section section--alt">
+      <div class="container">
+        <div class="section-head">
+          <h2>How it works</h2>
+          <p class="muted">Three steps from a blank page to a finished resume.</p>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <span class="step-num">01</span>
+            <h3>Add your details</h3>
+            <p class="muted">Experience, education and skills in a simple, guided form.</p>
+          </div>
+          <div class="step">
+            <span class="step-num">02</span>
+            <h3>Choose a template</h3>
+            <p class="muted">Switch designs and colors at any time. Your content stays in place.</p>
+          </div>
+          <div class="step">
+            <span class="step-num">03</span>
+            <h3>Download as PDF</h3>
+            <p class="muted">Export a print-ready A4 file you can send to any employer.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="templates" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>Templates</h2>
+          <p class="muted">Clean, readable layouts that work for any industry.</p>
+        </div>
+        <div class="template-grid" id="templateGrid"></div>
+      </div>
+    </section>
+
+    <section id="testimonials" class="section section--alt">
+      <div class="container">
+        <div class="section-head">
+          <h2>What people say</h2>
+          <p class="muted">Job seekers who built their resume with CV Maker.</p>
+        </div>
+        <div class="testimonials">
+          <figure class="testimonial">
+            <blockquote>“I had a clean, professional resume in about twenty minutes. Two weeks later I had three interviews lined up.”</blockquote>
+            <figcaption>
+              <span class="testimonial-avatar">DL</span>
+              <span><strong>Daniel Lee</strong><span class="muted">Software Engineer</span></span>
+            </figcaption>
+          </figure>
+          <figure class="testimonial">
+            <blockquote>“Keeping a separate version for each role I apply to used to be a mess. Now I just duplicate and adjust.”</blockquote>
+            <figcaption>
+              <span class="testimonial-avatar">MR</span>
+              <span><strong>Maria Rossi</strong><span class="muted">Marketing Manager</span></span>
+            </figcaption>
+          </figure>
+          <figure class="testimonial">
+            <blockquote>“The live preview is what sold me. I could see exactly how every change would look before downloading.”</blockquote>
+            <figcaption>
+              <span class="testimonial-avatar">AK</span>
+              <span><strong>Amira Khalil</strong><span class="muted">Recent graduate</span></span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>Questions</h2>
+        </div>
+        <div class="faq">
+          <details>
+            <summary>Is CV Maker free?</summary>
+            <p>Yes. You can create, edit and download as many resumes as you like.</p>
+          </details>
+          <details>
+            <summary>Where is my data stored?</summary>
+            <p>Your account and resumes are saved in this browser on this device. Nothing is sent to a server.</p>
+          </details>
+          <details>
+            <summary>Can I keep more than one resume?</summary>
+            <p>Yes. Many people keep a version for each type of role they apply for. Duplicate an existing resume to get started quickly.</p>
+          </details>
+          <details>
+            <summary>How do I download my resume?</summary>
+            <p>Click “Download PDF” in the editor and choose “Save as PDF” in the print dialog.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta section">
+      <div class="container">
+        <div class="cta-box">
+          <h2>Ready to start?</h2>
+          <p>Your next resume is a few minutes away.</p>
+          <a href="register.html" class="btn btn-lg" data-cta>Create your resume</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/render.js"></script>
+  <script src="js/landing.js"></script>
+</body>
+</html>

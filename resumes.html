@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resumes — CV Maker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/resume.css">
+  <script src="js/store.js"></script>
+  <script>CVM.Auth.requireUser();</script>
+</head>
+<body data-page="resumes">
+  <header class="app-header">
+    <div class="container app-header-inner">
+      <a href="dashboard.html" class="logo">CV<span>Maker</span></a>
+      <nav class="app-nav">
+        <a href="dashboard.html" data-nav="dashboard">Dashboard</a>
+        <a href="resumes.html" data-nav="resumes">Resumes</a>
+        <a href="account.html" data-nav="account">Account</a>
+      </nav>
+      <div class="app-user">
+        <a href="account.html" class="avatar" data-user-initials title="Account"></a>
+        <button class="btn btn-ghost btn-sm" data-action="logout">Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container page">
+    <div class="page-head">
+      <div>
+        <h1>Resumes</h1>
+        <p class="muted" id="countLabel"></p>
+      </div>
+      <button class="btn btn-primary" data-action="create">New resume</button>
+    </div>
+
+    <div class="toolbar" id="toolbar">
+      <input type="search" class="input" id="search" placeholder="Search resumes" aria-label="Search resumes">
+      <select class="input" id="sort" aria-label="Sort by">
+        <option value="updated">Last edited</option>
+        <option value="created">Date created</option>
+        <option value="title">Name A–Z</option>
+      </select>
+    </div>
+
+    <div class="resume-grid" id="resumeGrid"></div>
+
+    <div class="card empty" id="emptyState" hidden>
+      <h2>No resumes yet</h2>
+      <p class="muted">Create your first resume. You can keep as many versions as you need.</p>
+      <button class="btn btn-primary" data-action="create">Create resume</button>
+    </div>
+
+    <div class="empty" id="noResults" hidden>
+      <h2>No matches</h2>
+      <p class="muted">No resume matches your search.</p>
+    </div>
+  </main>
+
+  <script src="js/render.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/resumes.js"></script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact — CV Maker</title>
+  <meta name="description" content="Get in touch with the CV Maker team.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/store.js"></script>
+</head>
+<body data-page="contact">
+  <script src="js/site.js"></script>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <p class="eyebrow">Contact</p>
+        <h1>Get in touch</h1>
+        <p>Questions, feedback or a problem with your resume? Send us a message.</p>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="container contact">
+        <div class="contact-info">
+          <div>
+            <h2>Email</h2>
+            <p><a href="mailto:hello@cvmaker.app" data-contact-email>hello@cvmaker.app</a></p>
+          </div>
+          <div>
+            <h2>Common questions</h2>
+            <p>Many answers are in our <a href="index.html#faq">FAQ</a>.</p>
+          </div>
+          <div>
+            <h2>Privacy</h2>
+            <p>Read how we handle your data in our <a href="privacy.html">privacy policy</a>.</p>
+          </div>
+        </div>
+
+        <div class="card contact-card">
+          <form id="contactForm" class="form" novalidate>
+            <div class="grid-2">
+              <div class="field">
+                <label for="name">Name</label>
+                <input id="name" name="name" autocomplete="name">
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" autocomplete="email">
+              </div>
+            </div>
+            <div class="field">
+              <label for="topic">Topic</label>
+              <select id="topic" name="topic">
+                <option>General question</option>
+                <option>Technical problem</option>
+                <option>Feedback or suggestion</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" rows="6"></textarea>
+            </div>
+            <p class="form-error" data-form-error hidden></p>
+            <button type="submit" class="btn btn-primary btn-lg">Send message</button>
+            <p class="form-legal">By sending this form you agree to our <a href="privacy.html">privacy policy</a>.</p>
+          </form>
+
+          <div class="contact-success" id="contactSuccess" hidden>
+            <h2>Thanks for reaching out</h2>
+            <p id="contactSuccessText">Your message has been sent. We’ll reply to the email address you provided.</p>
+            <button class="btn btn-secondary" id="contactAgain">Send another message</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/auth.js"></script>
+  <script src="js/contact.js"></script>
+</body>
+</html>

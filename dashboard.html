@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard — CV Maker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/resume.css">
+  <script src="js/store.js"></script>
+  <script>CVM.Auth.requireUser();</script>
+</head>
+<body data-page="dashboard">
+  <header class="app-header">
+    <div class="container app-header-inner">
+      <a href="dashboard.html" class="logo">CV<span>Maker</span></a>
+      <nav class="app-nav">
+        <a href="dashboard.html" data-nav="dashboard">Dashboard</a>
+        <a href="resumes.html" data-nav="resumes">Resumes</a>
+        <a href="account.html" data-nav="account">Account</a>
+      </nav>
+      <div class="app-user">
+        <a href="account.html" class="avatar" data-user-initials title="Account"></a>
+        <button class="btn btn-ghost btn-sm" data-action="logout">Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container page">
+    <div class="page-head">
+      <div>
+        <h1 id="greeting">Welcome</h1>
+        <p class="muted">Pick up where you left off, or start something new.</p>
+      </div>
+      <button class="btn btn-primary" data-action="create">New resume</button>
+    </div>
+
+    <div class="stats">
+      <div class="card stat">
+        <span class="stat-label">Resumes</span>
+        <span class="stat-value" id="statTotal">0</span>
+      </div>
+      <div class="card stat">
+        <span class="stat-label">Last edited</span>
+        <span class="stat-value" id="statLast">—</span>
+      </div>
+      <div class="card stat">
+        <span class="stat-label">Latest resume completeness</span>
+        <span class="stat-value" id="statComplete">—</span>
+        <div class="progress"><span id="statCompleteBar" style="width:0"></span></div>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <h2>Recent resumes</h2>
+      <a href="resumes.html" id="viewAll" hidden>View all</a>
+    </div>
+
+    <div class="resume-grid" id="recentGrid"></div>
+
+    <div class="card empty" id="emptyState" hidden>
+      <h2>No resumes yet</h2>
+      <p class="muted">Create your first resume. It only takes a few minutes.</p>
+      <button class="btn btn-primary" data-action="create">Create resume</button>
+    </div>
+  </main>
+
+  <script src="js/render.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

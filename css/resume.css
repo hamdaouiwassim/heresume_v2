@@ -1,0 +1,257 @@
+/* Resume templates. A page is 794 x 1123px (A4 at 96dpi). */
+
+.cv {
+  --cv-accent: #1f2937;
+  width: 794px;
+  min-height: 1123px;
+  background: #fff;
+  color: #1f2937;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 12.5px;
+  line-height: 1.55;
+  text-align: left;
+  box-sizing: border-box;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.cv *,
+.cv *::before,
+.cv *::after { box-sizing: border-box; }
+
+.cv h1, .cv h3, .cv h4, .cv p, .cv ul { margin: 0; padding: 0; }
+.cv ul { list-style: none; }
+
+.cv-placeholder { color: #c3c7cf; }
+
+.cv-name {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #111827;
+}
+
+.cv-title {
+  margin-top: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--cv-accent);
+}
+
+.cv-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin-top: 12px;
+  color: #4b5563;
+}
+
+.cv-section { margin-top: 24px; }
+
+.cv-h {
+  margin-bottom: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cv-accent);
+}
+
+.cv-entry { break-inside: avoid; }
+.cv-entry + .cv-entry { margin-top: 14px; }
+
+.cv-entry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.cv-entry-title { font-size: 13.5px; font-weight: 600; color: #111827; }
+.cv-entry-sub { color: #4b5563; }
+.cv-entry-date { flex-shrink: 0; font-size: 12px; color: #6b7280; }
+.cv-entry > p,
+.cv-entry > ul { margin-top: 6px; }
+
+.cv-bullets li { position: relative; padding-left: 14px; }
+.cv-bullets li + li { margin-top: 3px; }
+.cv-bullets li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.68em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #9ca3af;
+}
+
+.cv-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.cv-tags li {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cv-accent) 9%, #fff);
+  font-size: 12px;
+}
+
+/* ---------- Classic ---------- */
+
+.cv--classic { padding: 56px 64px; }
+
+.cv--classic .cv-header {
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--cv-accent);
+  text-align: center;
+}
+
+.cv--classic .cv-contact { justify-content: center; }
+
+.cv--classic .cv-h {
+  padding-bottom: 6px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* ---------- Modern ---------- */
+
+.cv--modern { display: flex; flex-direction: column; }
+
+.cv--modern .cv-header {
+  padding: 44px 56px;
+  background: var(--cv-accent);
+}
+
+.cv--modern .cv-name { color: #fff; }
+.cv--modern .cv-title { color: rgba(255, 255, 255, 0.82); }
+.cv--modern .cv-placeholder { color: rgba(255, 255, 255, 0.45); }
+
+.cv--modern .cv-cols {
+  display: grid;
+  grid-template-columns: 236px 1fr;
+  flex: 1;
+}
+
+.cv--modern .cv-aside {
+  padding: 8px 28px 40px;
+  background: #f5f6f8;
+  overflow-wrap: anywhere;
+}
+
+.cv--modern .cv-main { padding: 8px 48px 40px 36px; }
+
+.cv--modern .cv-list li + li { margin-top: 4px; }
+
+.cv--modern .cv-aside .cv-tags { flex-direction: column; gap: 4px; }
+.cv--modern .cv-aside .cv-tags li { padding: 0; background: none; font-size: 12.5px; }
+
+/* ---------- Minimal ---------- */
+
+.cv--minimal { padding: 64px; }
+
+.cv--minimal .cv-name { font-size: 36px; font-weight: 600; }
+.cv--minimal .cv-title { color: #6b7280; font-weight: 400; }
+
+.cv--minimal .cv-section {
+  display: grid;
+  grid-template-columns: 124px 1fr;
+  gap: 24px;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid #eceef1;
+}
+
+.cv--minimal .cv-h { margin: 2px 0 0; }
+
+.cv--minimal .cv-tags { gap: 4px 0; }
+.cv--minimal .cv-tags li { padding: 0; background: none; font-size: 12.5px; }
+.cv--minimal .cv-tags li:not(:last-child)::after {
+  content: '·';
+  margin: 0 8px;
+  color: #9ca3af;
+}
+
+/* ---------- Professional ---------- */
+
+.cv--professional { display: flex; font-size: 12.5px; }
+
+.cv--professional .cv-cols {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  width: 100%;
+}
+
+.cv--professional .cv-aside {
+  padding: 36px 26px 40px;
+  background: var(--cv-accent);
+  color: rgba(255, 255, 255, 0.92);
+  overflow-wrap: anywhere;
+}
+
+.cv--professional .cv-photo {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 28px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.cv--professional .cv-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.cv--professional .cv-name {
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.cv--professional .cv-title { margin-top: 8px; color: rgba(255, 255, 255, 0.75); font-weight: 400; }
+.cv--professional .cv-placeholder { color: rgba(255, 255, 255, 0.45); }
+
+.cv--professional .cv-section { margin-top: 30px; }
+
+.cv--professional .cv-h {
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: #374151;
+  border-bottom: 1px solid #9ca3af;
+}
+
+.cv--professional .cv-aside .cv-h { color: #fff; border-bottom-color: rgba(255, 255, 255, 0.7); }
+
+.cv--professional .cv-list li + li { margin-top: 8px; }
+
+.cv--professional .cv-aside .cv-tags { flex-direction: column; gap: 8px; }
+
+.cv--professional .cv-aside .cv-tags li {
+  position: relative;
+  padding: 0 0 0 16px;
+  background: none;
+  font-size: 12.5px;
+}
+
+.cv--professional .cv-aside .cv-tags li::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 0.62em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.cv--professional .cv-main { padding: 6px 40px 40px 32px; }
+.cv--professional .cv-main .cv-section:first-child { margin-top: 30px; }
+
+/* Dates sit above the job title */
+.cv--professional .cv-entry + .cv-entry { margin-top: 18px; }
+.cv--professional .cv-entry-head { flex-direction: column; align-items: flex-start; gap: 2px; }
+.cv--professional .cv-entry-date { order: -1; color: #9ca3af; }
+.cv--professional .cv-entry-sub { color: #374151; }
+.cv--professional .cv-bullets li::before { background: #374151; }

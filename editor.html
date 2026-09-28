@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editor — CV Maker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/resume.css">
+  <script src="js/store.js"></script>
+  <script>CVM.Auth.requireUser();</script>
+</head>
+<body class="editor-body">
+  <header class="editor-topbar">
+    <a href="resumes.html" class="btn btn-ghost btn-sm">Back</a>
+    <input class="title-input" id="titleInput" aria-label="Resume name" autocomplete="off">
+    <span class="save-status" id="saveStatus">Saved</span>
+    <div class="spacer"></div>
+    <button class="btn btn-secondary btn-sm mobile-only" id="togglePreview">Preview</button>
+    <button class="btn btn-primary btn-sm" id="downloadBtn">Download PDF</button>
+  </header>
+
+  <div class="editor">
+    <aside class="editor-panel">
+      <nav class="tabs" role="tablist">
+        <button class="tab" role="tab" data-tab="details">Details</button>
+        <button class="tab" role="tab" data-tab="experience">Experience</button>
+        <button class="tab" role="tab" data-tab="education">Education</button>
+        <button class="tab" role="tab" data-tab="skills">Skills</button>
+        <button class="tab" role="tab" data-tab="design">Design</button>
+      </nav>
+
+      <div class="panel-scroll" id="panelScroll">
+        <!-- Details -->
+        <section class="panel" data-panel="details">
+          <h2>Personal details</h2>
+          <p>How employers will contact you.</p>
+          <div class="form">
+            <div class="photo-field">
+              <div class="photo-preview" id="photoPreview"></div>
+              <div>
+                <span class="label">Photo</span>
+                <p class="field-hint">Shown on the Professional template.</p>
+                <div class="photo-actions">
+                  <label class="btn btn-secondary btn-sm">
+                    <span id="photoButtonLabel">Upload photo</span>
+                    <input type="file" id="photoInput" accept="image/png, image/jpeg, image/webp" hidden>
+                  </label>
+                  <button type="button" class="btn btn-ghost btn-sm" id="photoRemove" hidden>Remove</button>
+                </div>
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="field">
+                <label for="fullName">Full name</label>
+                <input id="fullName" data-bind="personal.fullName">
+              </div>
+              <div class="field">
+                <label for="jobTitle">Job title</label>
+                <input id="jobTitle" data-bind="personal.jobTitle" placeholder="e.g. Marketing Manager">
+              </div>
+              <div class="field">
+                <label for="pEmail">Email</label>
+                <input id="pEmail" type="email" data-bind="personal.email">
+              </div>
+              <div class="field">
+                <label for="phone">Phone</label>
+                <input id="phone" type="tel" data-bind="personal.phone">
+              </div>
+              <div class="field">
+                <label for="location">Location</label>
+                <input id="location" data-bind="personal.location" placeholder="City, Country">
+              </div>
+              <div class="field">
+                <label for="website">Website or LinkedIn</label>
+                <input id="website" data-bind="personal.website">
+              </div>
+            </div>
+            <div class="field">
+              <label for="summary">Professional summary</label>
+              <textarea id="summary" data-bind="summary" rows="5" placeholder="Two or three sentences about your experience and what you are looking for."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <!-- Experience -->
+        <section class="panel" data-panel="experience" hidden>
+          <h2>Experience</h2>
+          <p>Start with your most recent position. Put each achievement on its own line.</p>
+          <div class="entries" data-list="experience"></div>
+          <button class="btn btn-secondary btn-block" data-add="experience">Add position</button>
+        </section>
+
+        <!-- Education -->
+        <section class="panel" data-panel="education" hidden>
+          <h2>Education</h2>
+          <p>Degrees, diplomas and relevant courses.</p>
+          <div class="entries" data-list="education"></div>
+          <button class="btn btn-secondary btn-block" data-add="education">Add education</button>
+        </section>
+
+        <!-- Skills -->
+        <section class="panel" data-panel="skills" hidden>
+          <h2>Skills</h2>
+          <p>Press Enter after each item.</p>
+          <div class="form">
+            <div class="field">
+              <span class="label">Skills</span>
+              <div class="tag-input" data-tags="skills">
+                <input type="text" placeholder="e.g. Project management" aria-label="Add a skill">
+              </div>
+            </div>
+            <div class="field">
+              <span class="label">Languages</span>
+              <div class="tag-input" data-tags="languages">
+                <input type="text" placeholder="e.g. French — Fluent" aria-label="Add a language">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Design -->
+        <section class="panel" data-panel="design" hidden>
+          <h2>Design</h2>
+          <p>Change the look at any time. Your content stays the same.</p>
+          <div class="design-group">
+            <span class="label">Template</span>
+            <div class="template-picker" id="templatePicker"></div>
+          </div>
+          <div class="design-group">
+            <span class="label">Accent color</span>
+            <div class="swatches" id="swatches"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="panel-footer">
+        <button class="btn btn-ghost btn-sm" id="prevTab">Previous</button>
+        <button class="btn btn-secondary btn-sm" id="nextTab">Next</button>
+      </div>
+    </aside>
+
+    <section class="editor-preview" id="previewPane">
+      <div class="preview-frame" id="previewFrame"></div>
+    </section>
+  </div>
+
+  <script src="js/render.js"></script>
+  <script src="js/editor.js"></script>
+</body>
+</html>
