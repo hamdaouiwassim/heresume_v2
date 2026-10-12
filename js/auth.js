@@ -102,5 +102,75 @@
     });
   }
 
+  /* ---------- Google sign-in (Google Identity Services, token flow) ---------- */
+
+  const googleButton = document.querySelector('[data-google-signin]');
+  if (googleButton) {
+    const clientId = (window.HRESUME_CONFIG || {}).googleClientId;
+    const errorEl = document.querySelector('[data-google-error]');
+    let tokenClient = null;
+
+    const showError = (message) => {
+      errorEl.textContent = message || '';
+      errorEl.hidden = !message;
+      googleButton.disabled = false;
+    };
+
+    function loadGsi() {
+      if (window.google && google.accounts && google.accounts.oauth2) return Promise.resolve();
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.onload = resolve;
+        script.onerror = () => reject(new Error('Could not reach Google. Check your connection and try again.'));
+        document.head.appendChild(script);
+      });
+    }
+
+    async function onToken(response) {
+      if (response.error) {
+        showError(response.error === 'access_denied' ? '' : 'Google sign-in failed. Please try again.');
+        return;
+      }
+      try {
+        const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: { Authorization: `Bearer ${response.access_token}` },
+        });
+        if (!res.ok) throw new Error();
+        const profile = await res.json();
+        if (!profile.email || !profile.email_verified) {
+          showError('Your Google account needs a verified email address.');
+          return;
+        }
+        Auth.loginWithGoogle(profile);
+        location.href = 'dashboard.html';
+      } catch {
+        showError('Google sign-in failed. Please try again.');
+      }
+    }
+
+    googleButton.addEventListener('click', async () => {
+      showError('');
+      if (!clientId) {
+        showError('Google sign-in isn’t set up yet. Add a client ID in js/config.js.');
+        return;
+      }
+      googleButton.disabled = true;
+      try {
+        await loadGsi();
+        tokenClient = tokenClient || google.accounts.oauth2.initTokenClient({
+          client_id: clientId,
+          scope: 'openid email profile',
+          callback: onToken,
+          error_callback: () => showError(''), // popup closed or blocked
+        });
+        tokenClient.requestAccessToken();
+      } catch (error) {
+        showError(error.message);
+      }
+    });
+  }
+
   window.Forms = { validate, rules, setFieldError, setFormError };
 })();

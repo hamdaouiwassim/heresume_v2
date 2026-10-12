@@ -35,12 +35,20 @@
 
   // Password
   const passwordForm = document.getElementById('passwordForm');
+  const currentField = passwordForm.elements.current.closest('.field');
+  // Accounts created with Google have no password yet; they can set one without the current field
+  const syncPasswordForm = () => { currentField.hidden = !user.password; };
+  syncPasswordForm();
+
   passwordForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     const { current, next } = passwordForm.elements;
-    if (!validate([[current, rules.password], [next, rules.newPassword]])) return;
+    const checks = user.password ? [[current, rules.password], [next, rules.newPassword]] : [[next, rules.newPassword]];
+    if (!validate(checks)) return;
     try {
       await Auth.changePassword(user.id, current.value, next.value);
+      user = Auth.current();
+      syncPasswordForm();
       passwordForm.reset();
       showNote(passwordForm, 'Password updated');
     } catch (error) {

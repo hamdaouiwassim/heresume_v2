@@ -57,9 +57,28 @@
     async login(email, password) {
       email = email.trim().toLowerCase();
       const user = read(KEYS.users, []).find((u) => u.email === email);
+      if (user && !user.password) {
+        throw new Error('This account uses Google sign-in. Continue with Google instead.');
+      }
       if (!user || user.password !== (await hash(password))) {
         throw new Error('Incorrect email or password.');
       }
+      write(KEYS.session, user.id);
+      return user;
+    },
+
+    /* Signs in with a Google profile, linking to an existing account with the same email or creating one. */
+    loginWithGoogle({ sub, email, name }) {
+      email = email.trim().toLowerCase();
+      const users = read(KEYS.users, []);
+      let user = users.find((u) => u.googleId === sub) || users.find((u) => u.email === email);
+      if (user) {
+        user.googleId = sub;
+      } else {
+        user = { id: uid(), name: (name || email.split('@')[0]).trim(), email, password: null, googleId: sub, createdAt: Date.now() };
+        users.push(user);
+      }
+      write(KEYS.users, users);
       write(KEYS.session, user.id);
       return user;
     },
@@ -84,7 +103,8 @@
     async changePassword(id, current, next) {
       const users = read(KEYS.users, []);
       const user = users.find((u) => u.id === id);
-      if (user.password !== (await hash(current))) {
+      // Google-only accounts have no password yet, so there is nothing to confirm
+      if (user.password && user.password !== (await hash(current))) {
         throw new Error('Current password is incorrect.');
       }
       user.password = await hash(next);

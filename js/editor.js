@@ -108,7 +108,8 @@
     const sections = Array.from(el.frame.querySelectorAll('.cv-section[data-section]'));
     pageBreaksList.innerHTML = sections.map((section) => {
       const key = section.dataset.section;
-      const label = section.querySelector('.cv-h').textContent;
+      const heading = section.querySelector('.cv-h');
+      const label = heading ? heading.textContent : (key ? key.charAt(0).toUpperCase() + key.slice(1) : 'Section');
       return `
         <label class="checkbox">
           <input type="checkbox" value="${esc(key)}" ${breaks.includes(key) ? 'checked' : ''}> ${esc(label)}
